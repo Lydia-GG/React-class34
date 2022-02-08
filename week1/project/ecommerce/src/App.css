@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+}
+
+.title {
+  padding: 10px;
+  margin-top: 30px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.catergory-btn {
+  padding: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  margin: 30px 10px;
+  border: none;
+}
+
+.products {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.product {
+  width: 350px;
+  height: 400px;
+  margin: 20px auto;
+  border: 1px solid rgb(201, 201, 211);
+  border-radius: 15px;
+}
+
+.image {
+  height: 70%;
+  width: 80%;
+  margin: auto;
+  object-fit: contain;
+}
+
+.product-description {
+  width: 90%;
+  margin: auto;
+}
