@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Category from './Category';
 import allProducts from '../fake-data/all-products';
+import allCategories from '../fake-data/all-categories';
+import Products from './Products';
 
-const Categories = ({ categories, setProducts }) => {
-  const [isActive, setIsActive] = useState('false');
-
-  console.log(categories);
+const Categories = () => {
+  const [products, setProducts] = useState(allProducts);
+  const [categories, setCategories] = useState(allCategories);
+  const [isActive, setIsActive] = useState(false);
 
   const filter = (category) => {
     category = category.replace('FAKE: ', '');
@@ -18,24 +20,29 @@ const Categories = ({ categories, setProducts }) => {
   };
 
   const handleSelection = (category) => {
-    if (isActive) {
+    if (isActive !== category) {
       setIsActive(category);
     }
   };
 
   return (
-    <div className="buttons">
-      {categories.map((category, index) => {
-        return (
-          <Category
-            category={category}
-            filter={filter}
-            key={index}
-            handleSelection={handleSelection}
-            isActive={isActive}
-          />
-        );
-      })}
+    <div>
+      <div className="buttons">
+        {categories.map((category, index) => {
+          return (
+            <Category
+              category={category}
+              filter={filter}
+              key={index}
+              handleSelection={handleSelection}
+              isActive={isActive}
+            />
+          );
+        })}
+      </div>
+      <div>
+        <Products products={products} />
+      </div>
     </div>
   );
 };

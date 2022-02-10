@@ -1,15 +1,14 @@
 import React from 'react';
 
 const Category = ({ category, filter, isActive, handleSelection }) => {
-  console.log(category);
   return (
-    <div className="d-flex justify-content-center ">
+    <div>
       <button
         onClick={() => {
           filter(category);
           handleSelection(category);
         }}
-        className="catergory-btn"
+        className="catergory-button"
         style={{
           backgroundColor: isActive === category ? 'lightblue' : '',
         }}
