@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-
-import UserDetailsForm from "./2-UserDetailsForm";
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import UserDetailsForm from './2-UserDetailsForm';
 
 /**
  * UserDetailsForm is a component that has some user interaction so is a little more complex.
@@ -12,30 +12,60 @@ import UserDetailsForm from "./2-UserDetailsForm";
  */
 
 const testUser = {
-  firstName: "John",
-  lastName: "Doe",
-  role: "Admin",
+  firstName: 'John',
+  lastName: 'Doe',
+  role: 'Admin',
 };
 const changedUser = {
-  firstName: "Mary",
-  lastName: "Williams",
-  role: "User",
+  firstName: 'Mary',
+  lastName: 'Williams',
+  role: 'User',
 };
 
-describe("UserDetailsForm", () => {
-  it("Correctly fills in the initial values", () => {
-    // TODO: Fill in!
-    expect(true).toBe(false);
+describe('UserDetailsForm', () => {
+  it('Correctly fills in the initial values', () => {
+    render(<UserDetailsForm initialUserValues={testUser} />);
+
+    const inputElement1 = screen.getAllByRole('textbox')[0];
+    const inputElement2 = screen.getAllByRole('textbox')[1];
+    const inputElement3 = screen.getAllByRole('textbox')[2];
+
+    expect(inputElement1.value).toBe('John');
+    expect(inputElement2.value).toBe('Doe');
+    expect(inputElement3.value).toBe('Admin');
   });
 
-  it("Correctly changes a fields value", () => {
-    // TODO: Fill in!
-    expect(true).toBe(false);
+  it('Correctly changes a fields value', () => {
+    render(<UserDetailsForm initialUserValues={testUser} />);
+
+    const inputElement1 = screen.getAllByRole('textbox')[0];
+    const inputElement2 = screen.getAllByRole('textbox')[1];
+    const inputElement3 = screen.getAllByRole('textbox')[2];
+
+    fireEvent.change(inputElement1, {
+      target: { value: changedUser.firstName },
+    });
+    fireEvent.change(inputElement2, {
+      target: { value: changedUser.lastName },
+    });
+    fireEvent.change(inputElement3, {
+      target: { value: changedUser.role },
+    });
+
+    expect(inputElement1.value).toBe('Mary');
+    expect(inputElement2.value).toBe('Williams');
+    expect(inputElement3.value).toBe('User');
   });
 
-  it("Submits the right values to the onSubmit function", () => {
-    // TODO: Fill in!
-    // TIP: You will need to mock the onSubmit function prop so you can check that it was called and what it was called with! Have a look at `jest.fn`
-    expect(true).toBe(false);
+  it('Submits the right values to the onSubmit function', () => {
+    const onSubmit = jest.fn();
+    render(
+      <UserDetailsForm initialUserValues={changedUser} onSubmit={onSubmit} />
+    );
+
+    userEvent.click(screen.getByText('Submit'));
+
+    expect(onSubmit).toHaveBeenCalled();
+    expect(onSubmit).toHaveBeenLastCalledWith({ ...changedUser });
   });
 });

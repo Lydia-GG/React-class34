@@ -18,33 +18,41 @@
  * }
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 function RandomJoke() {
-  const APIURL = "http://api.icndb.com/jokes/random";
+  const APIURL = 'http://api.icndb.com/jokes/random';
   const [joke, setJoke] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [hasError, setError] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     fetch(APIURL)
       .then((response) => response.json())
       .then((result) => {
-        setJoke(result.value.joke);
+        if (mounted) {
+          setJoke(result.value.joke);
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
         setError(true);
       })
       .finally(() => {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   if (hasError) {
-    return "Something went wrong with grabbing your joke. Please try again later.";
+    return 'Something went wrong with grabbing your joke. Please try again later.';
   } else if (isLoading) {
-    return "Loading...";
+    return 'Loading...';
   } else {
     return joke;
   }

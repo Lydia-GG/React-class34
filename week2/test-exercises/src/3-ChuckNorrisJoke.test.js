@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react";
-
-import ChuckNorrisJoke from "./3-ChuckNorrisJoke";
+import { render, screen, waitFor } from '@testing-library/react';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import ChuckNorrisJoke from './3-ChuckNorrisJoke';
 
 /**
  * ChuckNorrisJoke is a component that fetches a joke from an api and displays it on the screen.
@@ -14,33 +15,53 @@ import ChuckNorrisJoke from "./3-ChuckNorrisJoke";
  * To make this easier, a package called `jest-fetch-mock` can be useful, you will have to set that up yourself.
  * Have a look at: https://github.com/jefflau/jest-fetch-mock
  */
-
 const joke = "Chuck Norris's log statements are always at the FATAL level.";
 const testSuccessfullResponse = JSON.stringify({
-  type: "success",
+  type: 'success',
   value: {
     id: 538,
     joke,
-    categories: ["nerdy"],
+    categories: ['nerdy'],
   },
 });
 
-describe("ChuckNorrisJoke", () => {
-  it("should show the Loading text when the component is still loading", async () => {
-    //TODO: Fill in!
-    expect(true).toBe(false);
+const server = setupServer(
+  rest.post('http://api.icndb.com/jokes/random', (req, res, ctx) => {
+    return res(ctx.json(testSuccessfullResponse));
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+describe('ChuckNorrisJoke', () => {
+  it('should show the Loading text when the component is still loading', async () => {
+    render(<ChuckNorrisJoke />);
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it("should show the joke the fetch returns", async () => {
-    //TODO: Fill in!
-    expect(true).toBe(false);
+  test('Should show the joke the fetch returns', async () => {
+    render(<ChuckNorrisJoke />);
+    await waitFor(() => {
+      expect(screen.getByText(joke)).toBeInTheDocument();
+    });
   });
 
-  it("should show an error message if the fetch fails", async () => {
-    //TODO: FIll in!
-    //EXTRA CHALLENGE: You will find that you will get a `console.error` log because the component calls it.
-    //     The test will pass but it will clog up your test runs which will become a problem.
-    //     Think of a way to not change the component but also not get an error message.
-    expect(true).toBe(false);
+  it('should show an error message if the fetch fails', async () => {
+    server.use(
+      rest.get('http://api.icndb.com/jokes/random', (req, res, ctx) => {
+        return res(ctx.status(500));
+      })
+    );
+    render(<ChuckNorrisJoke />);
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Something went wrong with grabbing your joke. Please try again later.'
+        )
+      ).toBeInTheDocument();
+    });
   });
 });
