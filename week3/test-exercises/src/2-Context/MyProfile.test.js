@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import LoggedInUserContext from "./LoggedInUserContext";
+import { fireEvent, render, screen } from '@testing-library/react';
+import LoggedInUserContext from './LoggedInUserContext';
 
-import MyProfile from "./MyProfile";
+import MyProfile from './MyProfile';
 
-import TEST_ID from "./testids";
+import TEST_ID from './testids';
 
 /**
  * MyProfile in essence is very similar to a simple component that reacts (haha, get it?) based on props it is given.
@@ -30,10 +30,31 @@ function TestComponent({ loggedInUser, isLoggedIn, login, logout }) {
  * - If the user is logged in we should be showing a button to logout
  * - If the user is not logged in we should be showing a message to login
  */
-describe("MyProfile", () => {
-  it("Displays the name of the logged in user", () => {});
+describe('MyProfile', () => {
+  it('Displays the name of the logged in user', () => {
+    render(
+      <TestComponent loggedInUser={{ name: 'Gloria' }} isLoggedIn={true} />
+    );
+    expect(screen.getByText('Welcome back Gloria!')).toBeInTheDocument();
+  });
 
-  it("Allows the user to log out if the user is logged in", () => {});
+  it('Allows the user to log out if the user is logged in', () => {
+    render(
+      <TestComponent
+        loggedInUser={{ name: 'Gloria' }}
+        isLoggedIn={true}
+        logout
+      />
+    );
+    const logoutBtn = screen.getByTestId(TEST_ID.MYPROFILE_LOGOUT_BUTTON);
 
-  it("Shows a message to login if the user is not logged in", () => {});
+    expect(logoutBtn).toHaveTextContent('Log out');
+  });
+
+  it('Shows a message to login if the user is not logged in', () => {
+    render(<TestComponent isLoggedIn={false} />);
+    expect(
+      screen.getByTestId(TEST_ID.MYPROFILE_LOGGED_OUT_MESSAGE)
+    ).toHaveTextContent('You are not logged in! Please login first.');
+  });
 });

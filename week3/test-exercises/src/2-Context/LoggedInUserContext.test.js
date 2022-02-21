@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { useContext } from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import LoggedInUserContext, {
   LoggedInUserContextProvider,
-} from "./LoggedInUserContext";
+} from './LoggedInUserContext';
 
 /**
  * Contexts may look like they complicate testing, but actually they provide a nice way of dividing your logic and rendering.
@@ -24,10 +24,10 @@ import LoggedInUserContext, {
  * Well the way to do that is to create our own custom TestComponent!
  */
 const TEST_ID = {
-  LOGGED_IN_USER: "loggedInUser",
-  IS_LOGGED_IN: "isLoggedIn",
-  LOGIN: "login",
-  LOGOUT: "logout",
+  LOGGED_IN_USER: 'loggedInUser',
+  IS_LOGGED_IN: 'isLoggedIn',
+  LOGIN: 'login',
+  LOGOUT: 'logout',
 };
 /** We provide a prop that can be given, this will be given to the login function if you click on it */
 function TestComponent({ userToLogin }) {
@@ -41,10 +41,13 @@ function TestComponent({ userToLogin }) {
         data-testid={TEST_ID.LOGGED_IN_USER}
         data-value={JSON.stringify(loggedInUser)}
       />
+
       <div data-testid={TEST_ID.IS_LOGGED_IN} data-value={isLoggedIn} />
+
       <button data-testid={TEST_ID.LOGIN} onClick={() => login(userToLogin)}>
         Log in
       </button>
+
       <button data-testid={TEST_ID.LOGOUT} onClick={() => logout()}>
         Log out
       </button>
@@ -52,12 +55,70 @@ function TestComponent({ userToLogin }) {
   );
 }
 
-describe("LoggedInUserContext", () => {
-  it("Correctly sets the user as loggedIn if an initialUser is given", () => {});
+describe('LoggedInUserContext', () => {
+  it('Correctly sets the user as loggedIn if an initialUser is given', () => {
+    const user = { name: 'John' };
+    render(
+      <LoggedInUserContextProvider initialUser={user}>
+        <TestComponent />
+      </LoggedInUserContextProvider>
+    );
+    expect(screen.getByTestId(TEST_ID.LOGGED_IN_USER)).toHaveAttribute(
+      'data-value',
+      JSON.stringify(user)
+    );
 
-  it("Correctly sets the user as logged out if no initialUser is given", () => {});
+    expect(screen.getByTestId(TEST_ID.IS_LOGGED_IN)).toHaveAttribute(
+      'data-value',
+      'true'
+    );
+  });
 
-  it("logs the user in if you use the login function", () => {});
+  it('Correctly sets the user as logged out if no initialUser is given', () => {
+    render(
+      <LoggedInUserContextProvider>
+        <TestComponent />
+      </LoggedInUserContextProvider>
+    );
 
-  it("logs the user out if you use the logout function", () => {});
+    expect(screen.getByTestId(TEST_ID.LOGGED_IN_USER)).toHaveAttribute(
+      'data-value',
+      'null'
+    );
+    expect(screen.getByTestId(TEST_ID.IS_LOGGED_IN)).toHaveAttribute(
+      'data-value',
+      'false'
+    );
+  });
+
+  it('logs the user in if you use the login function', () => {
+    render(
+      <LoggedInUserContextProvider>
+        <TestComponent userToLogin={{ name: 'John' }} />
+      </LoggedInUserContextProvider>
+    );
+    const loginBtn = screen.getByTestId(TEST_ID.LOGIN);
+    expect(loginBtn).toHaveTextContent('Log in');
+    fireEvent.click(loginBtn);
+
+    expect(screen.getByTestId(TEST_ID.IS_LOGGED_IN)).toHaveAttribute(
+      'data-value',
+      'true'
+    );
+  });
+
+  it('logs the user out if you use the logout function', () => {
+    render(
+      <LoggedInUserContextProvider>
+        <TestComponent />
+      </LoggedInUserContextProvider>
+    );
+    const logoutBtn = screen.getByTestId(TEST_ID.LOGOUT);
+    expect(logoutBtn).toHaveTextContent('Log out');
+    fireEvent.click(logoutBtn);
+    expect(screen.getByTestId(TEST_ID.IS_LOGGED_IN)).toHaveAttribute(
+      'data-value',
+      'false'
+    );
+  });
 });
