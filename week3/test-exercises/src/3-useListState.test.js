@@ -23,7 +23,8 @@ describe('useListState', () => {
     expect(result.current.list).toEqual(testList);
   });
 
-  it('Adding an element updates the list', () => {
+
+it('Adding an element updates the list', () => {
     const testList = [1, 2, 3];
     const { result } = renderHook(() => useListState(testList));
 
@@ -51,4 +52,6 @@ describe('useListState', () => {
 
     expect(result.current.list).toEqual([{ id: 1, value: 1 }]);
   });
+});
+
 });
