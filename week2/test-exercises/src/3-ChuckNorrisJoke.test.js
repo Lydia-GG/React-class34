@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import fetchMock from 'jest-fetch-mock';
 import ChuckNorrisJoke from './3-ChuckNorrisJoke';
 
 /**
@@ -15,6 +14,8 @@ import ChuckNorrisJoke from './3-ChuckNorrisJoke';
  * To make this easier, a package called `jest-fetch-mock` can be useful, you will have to set that up yourself.
  * Have a look at: https://github.com/jefflau/jest-fetch-mock
  */
+
+beforeEach(() => fetchMock.resetMocks());
 const joke = "Chuck Norris's log statements are always at the FATAL level.";
 const testSuccessfullResponse = JSON.stringify({
   type: 'success',
@@ -25,24 +26,20 @@ const testSuccessfullResponse = JSON.stringify({
   },
 });
 
-const server = setupServer(
-  rest.post('http://api.icndb.com/jokes/random', (req, res, ctx) => {
-    return res(ctx.json(testSuccessfullResponse));
-  })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-
 describe('ChuckNorrisJoke', () => {
   it('should show the Loading text when the component is still loading', async () => {
+    fetch.mockResponseOnce(testSuccessfullResponse);
     render(<ChuckNorrisJoke />);
 
     expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText(joke)).toBeInTheDocument();
+    });
   });
 
   test('Should show the joke the fetch returns', async () => {
+    fetch.mockResponseOnce(testSuccessfullResponse);
     render(<ChuckNorrisJoke />);
     await waitFor(() => {
       expect(screen.getByText(joke)).toBeInTheDocument();
@@ -50,11 +47,8 @@ describe('ChuckNorrisJoke', () => {
   });
 
   it('should show an error message if the fetch fails', async () => {
-    server.use(
-      rest.get('http://api.icndb.com/jokes/random', (req, res, ctx) => {
-        return res(ctx.status(500));
-      })
-    );
+    fetch.mockReject();
+
     render(<ChuckNorrisJoke />);
     await waitFor(() => {
       expect(
