@@ -19,6 +19,14 @@
   margin: 30px 10px;
   border: none;
 }
+.isActive {
+  background-color: lightblue;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  margin: 30px 10px;
+  border: none;
+}
 
 .products {
   margin-top: 5px;

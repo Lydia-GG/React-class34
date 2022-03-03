@@ -32,7 +32,6 @@ const Categories = () => {
 
   return (
     <div>
-      {/* {error && <div>{error}</div>} */}
       {isLoading && <div>Loading.....</div>}
       {categories && (
         <div className="buttons">

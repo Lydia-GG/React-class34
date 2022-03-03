@@ -8,10 +8,7 @@ const Category = ({ category, filter, isActive, handleSelection }) => {
           filter(category);
           handleSelection(category);
         }}
-        className="catergory-button"
-        style={{
-          backgroundColor: isActive === category ? 'lightblue' : '',
-        }}
+        className={isActive === category ? 'isActive' : 'catergory-button'}
       >
         {category}
       </button>
