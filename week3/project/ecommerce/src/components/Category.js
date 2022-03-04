@@ -7,12 +7,8 @@ const Category = ({ category, filter, isActive, handleSelection }) => {
         onClick={() => {
           filter(category);
           handleSelection(category);
-          console.log(category);
         }}
-        className="catergory-button"
-        style={{
-          backgroundColor: isActive === category ? 'lightblue' : '',
-        }}
+        className={isActive === category ? 'isActive' : 'catergory-button'}
       >
         {category}
       </button>

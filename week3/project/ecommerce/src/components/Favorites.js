@@ -1,28 +1,43 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FavoritesContext } from './FavoritesProvider';
-import Heart from './Heart';
+import Products from './Products';
 
 const Favorites = () => {
   const { favorites } = useContext(FavoritesContext);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  return (
-    <div className="fav-products">
-      {favorites &&
-        favorites.map((favorite) => {
-          const { id, image, title, rating, description } = favorite;
-          return (
-            <div className="fav-product" key={id}>
-              <img src={image} alt={title} />
-              <h3>{title}</h3>
-              <p>{description}</p>
-              <div className="rating">
-                <h4>Rate: {rating.rate}</h4>
-                <Heart product={favorite} />
-              </div>
-            </div>
-          );
-        })}
-    </div>
+  useEffect(() => {
+    const promises = favorites.map((id) => {
+      return fetch(`https://fakestoreapi.com/products/${id}`);
+    });
+
+    Promise.all(promises)
+      .then((responses) => {
+        return Promise.all(responses.map((response) => response.json()));
+      })
+      .then((results) => {
+        setProducts(results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(true);
+        setLoading(false);
+      });
+  }, [favorites]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>"Oops, something went wrong. Come back later!"</div>;
+  }
+
+  return products.length ? (
+    <Products products={products} />
+  ) : (
+    <div>You haven't chosen any favorites yet!</div>
   );
 };
 

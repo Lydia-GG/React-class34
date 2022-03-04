@@ -4,7 +4,6 @@ const Nav = () => {
   return (
     <nav>
       <NavLink to="/">Products</NavLink>
-      {/* <link></link> */}
       <NavLink to="/favorites">Favorites</NavLink>
     </nav>
   );

@@ -14,7 +14,8 @@ const Product = ({ product }) => {
           </Link>
           <div className="rating">
             <h4>Rate: {rating.rate}</h4>
-            <Heart product={product} />
+            {/* <Heart product={product} /> */}
+            <Heart id={id} />
           </div>
         </div>
       )}

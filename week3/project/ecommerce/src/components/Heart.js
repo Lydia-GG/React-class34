@@ -3,13 +3,13 @@ import heartSolid from '../assets/heart-solid.svg';
 import { useState, useContext, useEffect } from 'react';
 import { FavoritesContext } from './FavoritesProvider';
 
-const Heart = ({ product }) => {
+const Heart = ({ id }) => {
   const { addFavPro, removeFavPro, favorites } = useContext(FavoritesContext);
 
   const [src, setSrc] = useState(true);
 
   useEffect(() => {
-    const inFavorites = favorites.includes(product);
+    const inFavorites = favorites.includes(id);
     if (inFavorites) {
       setSrc(false);
     } else {
@@ -18,7 +18,7 @@ const Heart = ({ product }) => {
   }, [favorites]);
 
   const favoritePro = () => {
-    src ? addFavPro(product) : removeFavPro(product);
+    src ? addFavPro(id) : removeFavPro(id);
     setSrc(!src);
   };
 
@@ -28,7 +28,7 @@ const Heart = ({ product }) => {
         src={src ? heart : heartSolid}
         alt={src ? 'heart' : 'heartSolid'}
         className="heart"
-        onClick={() => favoritePro(product)}
+        onClick={() => favoritePro(id)}
       />
     </>
   );

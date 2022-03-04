@@ -4,11 +4,12 @@ import Heart from './Heart';
 
 const SingleProduct = () => {
   const { id } = useParams();
+  const idNumber = +id;
   const {
     data: product,
     isLoading,
     error,
-  } = useFetch(`https://fakestoreapi.com/products/${id}`);
+  } = useFetch(`https://fakestoreapi.com/products/${idNumber}`);
 
   return (
     <div>
@@ -27,7 +28,7 @@ const SingleProduct = () => {
             <div className="details-rating">
               <h4>Rate: {product.rating.rate}</h4>
               <h4>price: {product.price}</h4>
-              <Heart product={product} />
+              <Heart id={idNumber} />
             </div>
           </div>
         </div>
